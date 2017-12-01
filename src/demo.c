@@ -64,7 +64,7 @@ void *detect_in_thread(void *ptr)
     printf("\nFPS:%.1f\n",fps);
     printf("Objects:\n\n");
     image display = buff[(buff_index+2) % 3];
-    draw_detections(display, demo_detections, demo_thresh, boxes, probs, 0, demo_names, demo_alphabet, demo_classes);
+    draw_detections(display, demo_detections, demo_thresh, boxes, probs, 0, demo_names, demo_alphabet, demo_classes, "");
 
     demo_index = (demo_index + 1)%demo_frame;
     running = 0;
@@ -173,7 +173,7 @@ void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const ch
 
     int count = 0;
     if(!prefix){
-        cvNamedWindow("Demo", CV_WINDOW_NORMAL); 
+        cvNamedWindow("Demo", CV_WINDOW_NORMAL);
         if(fullscreen){
             cvSetWindowProperty("Demo", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
         } else {
@@ -261,7 +261,7 @@ void demo_compare(char *cfg1, char *weight1, char *cfg2, char *weight2, float th
 
     int count = 0;
     if(!prefix){
-        cvNamedWindow("Demo", CV_WINDOW_NORMAL); 
+        cvNamedWindow("Demo", CV_WINDOW_NORMAL);
         if(fullscreen){
             cvSetWindowProperty("Demo", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
         } else {
@@ -296,4 +296,3 @@ void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const ch
     fprintf(stderr, "Demo needs OpenCV for webcam images.\n");
 }
 #endif
-
