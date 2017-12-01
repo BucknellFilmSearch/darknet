@@ -352,7 +352,7 @@ void validate_detector_flip(char *datacfg, char *cfgfile, char *weightfile, char
         if(fps) fclose(fps[j]);
     }
     if(coco){
-        fseek(fp, -2, SEEK_CUR); 
+        fseek(fp, -2, SEEK_CUR);
         fprintf(fp, "\n]\n");
         fclose(fp);
     }
@@ -480,7 +480,7 @@ void validate_detector(char *datacfg, char *cfgfile, char *weightfile, char *out
         if(fps) fclose(fps[j]);
     }
     if(coco){
-        fseek(fp, -2, SEEK_CUR); 
+        fseek(fp, -2, SEEK_CUR);
         fprintf(fp, "\n]\n");
         fclose(fp);
     }
@@ -577,15 +577,24 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     char *input = buff;
     int j;
     float nms=.3;
+//STEFANOS EDITS HERE
+//initial parts for JSON
+	printf("[\n");
     while(1){
         if(filename){
             strncpy(input, filename, 256);
         } else {
-            printf("Enter Image Path: ");
-            fflush(stdout);
+//STEFANOS EDITS HERE
+            //printf("Enter Image Path: ");
+	//input is path, possibly need two strtok's
             input = fgets(input, 256, stdin);
-            if(!input) return;
+            if(!input){
+//STEFANO EDITS HERE
+        		printf("]\n");
+        		return;
+		        }
             strtok(input, "\n");
+            fprintf(stdout, "\tProccessing %s...\n", input);
         }
         image im = load_image_color(input,0,0);
         image sized = letterbox_image(im, net->w, net->h);
@@ -607,18 +616,22 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         float *X = sized.data;
         time=what_time_is_it_now();
         network_predict(net, X);
-        printf("%s: Predicted in %f seconds.\n", input, what_time_is_it_now()-time);
+//STEFANOS EDITS HERE
+        //printf("%s: Predicted in %f seconds.\n", input, what_time_is_it_now()-time);
+	//strtok(input,"/");
+	//printf("{\nname:%s\n,", input);
         get_region_boxes(l, im.w, im.h, net->w, net->h, thresh, probs, boxes, masks, 0, 0, hier_thresh, 1);
         if (nms) do_nms_sort(boxes, probs, l.w*l.h*l.n, l.classes, nms);
         //else if (nms) do_nms_sort(boxes, probs, l.w*l.h*l.n, l.classes, nms);
-        draw_detections(im, l.w*l.h*l.n, thresh, boxes, probs, masks, names, alphabet, l.classes);
+        printf("running draw\n");
+        draw_detections(im, l.w*l.h*l.n, thresh, boxes, probs, masks, names, alphabet, l.classes, input);
         if(outfile){
             save_image(im, outfile);
         }
         else{
             save_image(im, "predictions");
 #ifdef OPENCV
-            cvNamedWindow("predictions", CV_WINDOW_NORMAL); 
+            cvNamedWindow("predictions", CV_WINDOW_NORMAL);
             if(fullscreen){
                 cvSetWindowProperty("predictions", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
             }
