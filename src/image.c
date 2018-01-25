@@ -4,6 +4,7 @@
 #include "cuda.h"
 #include <stdio.h>
 #include <math.h>
+#include <libgen.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -237,10 +238,28 @@ image **load_alphabet()
     return alphabets;
 }
 
+void strip_ext(char *fname) {
+    char *end = fname + strlen(fname);
+
+    while (end > fname && *end != '.' && *end != '\\' && *end != '/') {
+        --end;
+    }
+
+    if (end > fname && *end == '.') {
+        *end = '\0';
+    }
+}
+
 void draw_detections(image im, int num, float thresh, box *boxes, float **probs, float **masks, char **names, image **alphabet, int classes, char *filename)
 {
 //THIS SHOULD BE CALLED IN TEST
     int i,j;
+
+    // Collect DB line ID and OCLC ID for output
+    char *db_line_id = basename(filename);
+    strip_ext(db_line_id);
+    char *oclc_id = basename(dirname(filename));
+
     for(i = 0; i < num; ++i){
         char labelstr[4096] = {0};
         int class = -1;
@@ -256,8 +275,8 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
                     //printf(",\n{\n");
                 }
 
-                printf("{\nname: %s,\nvalues: {\n", filename);
-                printf("\tname:\"%s\",\n\tconfidence: .%.0f,\n", names[j], probs[i][j]*100);
+                printf("{\"oclc_id\": \"%s\", \"db_line_id\": \"%s\", ", oclc_id, db_line_id);
+                printf("\"label\": \"%s\", \"confidence\": %.2f, ", names[j], probs[i][j]);
 
                 box b = boxes[i];
                 int left  = (b.x-b.w/2.)*im.w;
@@ -269,7 +288,7 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
                 if(top < 0) top = 0;
                 if(bot > im.h-1) bot = im.h-1;
     //STEFANO EDIT HERE
-                printf("\tt:%d,\n\tb:%d,\n\tl:%d,\n\tr:%d\n}\n},\n", top, bot, left, right);
+                printf("\"t\": %d, \"b\": %d, \"l\": %d, \"r\": %d}\n", top, bot, left, right);
                 fflush(stdout);
             }
         }

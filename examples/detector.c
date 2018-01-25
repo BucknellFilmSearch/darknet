@@ -579,7 +579,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     float nms=.3;
 //STEFANOS EDITS HERE
 //initial parts for JSON
-	printf("[\n");
+	// printf("[\n");
     while(1){
         if(filename){
             strncpy(input, filename, 256);
@@ -590,11 +590,11 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
             input = fgets(input, 256, stdin);
             if(!input){
 //STEFANO EDITS HERE
-        		printf("]\n");
+        		// printf("]\n");
         		return;
 		        }
             strtok(input, "\n");
-            fprintf(stdout, "\tProccessing %s...\n", input);
+            // fprintf(stdout, "\tProccessing %s...\n", input);
         }
         image im = load_image_color(input,0,0);
         image sized = letterbox_image(im, net->w, net->h);
@@ -623,7 +623,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         get_region_boxes(l, im.w, im.h, net->w, net->h, thresh, probs, boxes, masks, 0, 0, hier_thresh, 1);
         if (nms) do_nms_sort(boxes, probs, l.w*l.h*l.n, l.classes, nms);
         //else if (nms) do_nms_sort(boxes, probs, l.w*l.h*l.n, l.classes, nms);
-        printf("running draw\n");
+        // printf("running draw\n");
         draw_detections(im, l.w*l.h*l.n, thresh, boxes, probs, masks, names, alphabet, l.classes, input);
         if(outfile){
             save_image(im, outfile);
