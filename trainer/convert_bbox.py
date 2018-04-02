@@ -37,7 +37,7 @@ def convert(size, box):
     
 """-------------------------------------------------------------------""" 
 
-path_data = '/bboxOut/'
+path_data = 'bboxOut/'
 mypath = "bboxIn/"
 bboxExt = "filelist_LBP.txt"
 classes = listdir(mypath)
@@ -75,7 +75,7 @@ for classifier in classes:
             elems = line.split('\t')
             print(elems)
             img_path = wd + "/" + mypath + classifier + '/' + elems[0]
-            out_path = wd + path_data + classifier + '_'+ elems[0]
+            out_path = wd + "/" + path_data + classifier.replace(" ", "_") + '_'+ elems[0]
             #possible rearrange
             xmin = elems[1]
             xmax = elems[3]
@@ -124,9 +124,9 @@ for classifier in classes :
 
         if counter == index_test:
             counter = 1
-            file_test.write('trainer' + path_data + classifier + "_" + title + '.jpg' + "\n")
+            file_test.write(path_data + classifier.replace(" ", "_") + "_" + title + '.jpg' + "\n")
         else:
-            file_train.write('trainer' + path_data + classifier + "_" + title + '.jpg' + "\n")
+            file_train.write(path_data + classifier.replace(" ", "_") + "_" + title + '.jpg' + "\n")
             counter = counter + 1
             #print("Adding " + pathAndFilename + " to trainer")
 
