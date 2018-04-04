@@ -130,7 +130,7 @@ for classifier in classes :
             counter = counter + 1
             #print("Adding " + pathAndFilename + " to trainer")
 
-file_data.write("classes= " + str(len(classifier)) + "\ntrain  = train.txt\nvalid  = test.txt\nnames = obj.names\nbackup = backup/\n")
+file_data.write("classes= " + str(len(classes)) + "\ntrain  = train.txt\nvalid  = test.txt\nnames = obj.names\nbackup = backup/\n")
 file_data.close()
 file_names.close()
 file_test.close()
