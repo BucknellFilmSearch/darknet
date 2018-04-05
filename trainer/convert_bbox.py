@@ -69,7 +69,7 @@ def main() :
     """ Make directories """
 
     if not os.path.exists(in_dir):
-        print("Missing input directory (bboxIn/)", file=stderr)
+        print("Missing input directory (bboxIn/)")
         return
 
     """ Process """
@@ -109,7 +109,7 @@ def main() :
                     counter = 1
                     file_test.write(img_path)
                 else:
-                    file_train.write(img_path)
+                    file_train.write(img_path + '\n')
                     counter = counter + 1
         print(classifier + " preprocessed")
     file_data.write("classes= " + str(len(classes)) + "\ntrain  = train.txt\nvalid  = test.txt\nnames = obj.names\nbackup = backup/\n")
