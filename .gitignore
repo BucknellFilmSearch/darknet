@@ -19,8 +19,11 @@ cfg/
 darknet
 yolo.weights
 .fuse*
-trainer/bboxOut/*
+trainer/test.txt
+trainer/train.txt
 trainer/bboxIn/*
+*.a
+*.so
 
 
 # OS Generated #
