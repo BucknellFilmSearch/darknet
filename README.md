@@ -14,3 +14,5 @@ For questions or issues please use the [Google Group](https://groups.google.com/
 -added training directory and script
 
 -added populating script
+
+-changes to the Makefile for lab machine cuda preferences
