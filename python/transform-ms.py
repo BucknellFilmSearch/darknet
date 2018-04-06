@@ -1,18 +1,4 @@
-'''
-Things to do:
-Add class name
-configure paths
-Change parsing to one file for input coordinates from
-'''
-
-
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec  9 14:55:43 2015
-This script is to convert the txt annotation files to appropriate format needed by YOLO
-@author: Guanghan Ning
-Email: gnxr9@mail.missouri.edu
-"""
+#!/usr/bin/env python
 
 import os
 from os import walk, getcwd, listdir
@@ -52,8 +38,6 @@ def transform_single(idx, orig, names_f, train_f, test_f, data_f):
     # Write classifier into 'obj.names'
     names_f.write(classifier.replace('_', ' ') + '\n')
 
-    print(orig)
-
     with open(os.path.join(os.path.curdir, orig, manifest), 'r') as manifest_f:
         boxes = manifest_f.read().split('\n')
 
@@ -89,6 +73,8 @@ def transform_single(idx, orig, names_f, train_f, test_f, data_f):
 
 def transform_multiple(root, dest, name, move):
 
+    dest = os.path.abspath(dest)
+
     if not os.path.exists(root) or not os.path.isdir(root):
         print('Specified path is not a directory or does not exist')
         sys.exit(1)
@@ -105,6 +91,9 @@ def transform_multiple(root, dest, name, move):
         os.rename(root, os.path.join(dest, name))
 
     classes = [ d for d in listdir(os.path.join(dest, name)) if os.path.isdir(os.path.join(dest, name, d)) ]
+
+    os.mkdir(os.path.join(dest, name, name + '-backup'))
+
     # open all necessary files in the root of the dataset directory
     with open(os.path.join(dest, name, name) + '.names', 'w+') as names, \
          open(os.path.join(dest, name, name) + '.train', 'w+') as train, \
@@ -112,13 +101,13 @@ def transform_multiple(root, dest, name, move):
          open(os.path.join(dest, name, name) + '.data', 'w+') as data:
         for idx, classifier in enumerate(classes):
 
-            print('Transforming {classifier}'.format(**locals()))    
+            print('Transforming "{classifier}" files'.format(**locals()))    
             transform_single(idx, os.path.join(dest, name, classifier.replace(' ', '_')), names, train, test, data)
 
         print('Writing {name}.data'.format(**locals()))
         class_ct = len(classes)
-        path = os.path.join(dest, name)
-        data_cfg = 'classes= {class_ct}\ntrain  = {path}.train\nvalid  = {path}.test\nnames = {path}.names\nbackup = backup\n'.format(**locals())
+        path = os.path.join(dest, name,name)
+        data_cfg = 'classes= {class_ct}\ntrain  = {path}.train\nvalid  = {path}.test\nnames = {path}.names\nbackup = {path}-backup\n'.format(**locals())
         data.write(data_cfg)
 
 if __name__ == "__main__":
